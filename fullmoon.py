@@ -24,6 +24,28 @@ end_date = start_date_utc_naive + timedelta(days=365*2)
 # 设置起始日期为下一个新月
 full_moon = ephem.next_full_moon(start_date_utc_naive)
 
+
+def get_moonrise_info(date):
+
+        risedate = ""
+        risetime = ""
+        riseang = ""
+
+        observer.date = date
+        moonrise = observer.next_rising(ephem.Moon())
+        moonrise_time = ephem.localtime(moonrise)
+
+        observer.date = moonrise_time.astimezone(pytz.utc)
+
+        # 获取月亮的方位角（升起时）
+        moon = ephem.Moon(observer)
+        moon_azimuth = moon.az  # 方位角
+        moon_azimuth_deg = float(moon_azimuth) * 180 / 3.14159  # 转换为度
+
+        return moonrise_time,moon_azimuth_deg
+
+
+
 # 循环计算未来两年内每个月的满月
 while full_moon.datetime() < end_date:
     
